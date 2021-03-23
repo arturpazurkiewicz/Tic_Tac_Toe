@@ -1,0 +1,15 @@
+<resources>
+    <string name="app_name">Tic Tac Toe</string>
+    <string name="size_description">Choose the size of the board</string>
+    <string name="win_description">Choose the winning length</string>
+    <string name="accept_button">ACCEPT</string>
+    <string name="board_size">%d X %d</string>
+    <string name="win_size">%d</string>
+    <string name="last_won">Last time won %s\nBoard size %d X %d\nWin length %d</string>
+
+
+    <string name="wait">Opponent turn</string>
+    <string name="play">Your turn</string>
+    <string name="cross">Cross</string>
+    <string name="circle">Circle</string>
+</resources>
