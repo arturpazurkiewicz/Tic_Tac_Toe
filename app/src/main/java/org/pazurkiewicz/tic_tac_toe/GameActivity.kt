@@ -1,7 +1,7 @@
 package org.pazurkiewicz.tic_tac_toe
 
 import android.app.Activity
-import android.app.AlertDialog
+import android.content.Context
 import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
@@ -15,8 +15,7 @@ class GameActivity : AppCompatActivity() {
     private var isWon = false
     private lateinit var binding: ActivityGameBinding
     private var turn = 0
-    private lateinit var board: Array<Array<TileState>>
-    private lateinit var tiles: Array<Array<ImageButton>>
+    private lateinit var tiles: Array<Array<MyTile>>
 
 
 
@@ -30,13 +29,7 @@ class GameActivity : AppCompatActivity() {
         setContentView(binding.root)
         size = intent.getIntExtra("size",3)
         win = intent.getIntExtra("win",3)
-        binding.player1.text = win.toString()
         counter = size*size
-        board = Array(size) {
-            Array(size) {
-                TileState.EMPTY
-            }
-        }
         createBoard()
     }
 
@@ -59,7 +52,7 @@ class GameActivity : AppCompatActivity() {
 
         tiles = Array(size) {
             Array(size){
-                ImageButton(this)
+                MyTile(this)
             }
         }
         for (y in 0 until size) {
@@ -87,13 +80,13 @@ class GameActivity : AppCompatActivity() {
             if (isWon)
                 finish()
             else {
-                if (board[x][y] == TileState.EMPTY) {
+                if (tiles[x][y].tileState == TileState.EMPTY) {
                     if (turn == 0) {
                         b.setImageResource(R.drawable.cross)
-                        board[x][y] = TileState.CROSS
+                        tiles[x][y].tileState = TileState.CROSS
                     } else {
                         b.setImageResource(R.drawable.circle)
-                        board[x][y] = TileState.CIRCLE
+                        tiles[x][y].tileState = TileState.CIRCLE
                     }
                     checkIfWon(x, y)
                     nextTurn()
@@ -110,20 +103,20 @@ class GameActivity : AppCompatActivity() {
     }
 
     private fun checkIfWon(x: Int, y: Int) {
-        val selectedTile = board[x][y]
+        val selectedTileState = tiles[x][y].tileState
 //        horizontal
-        var found = ArrayList<ImageButton>()
+        var found = ArrayList<MyTile>()
         found.add(tiles[x][y])
 
         for (i in x-1 downTo  0){
-            if (board[i][y] == selectedTile)
+            if (tiles[i][y].tileState == selectedTileState)
                 found.add(tiles[i][y])
             else
                 break
         }
 
         for (i in x+1 until size) {
-            if (board[i][y] == selectedTile)
+            if (tiles[i][y].tileState == selectedTileState)
                 found.add(tiles[i][y])
             else
                 break
@@ -136,14 +129,14 @@ class GameActivity : AppCompatActivity() {
         found = ArrayList()
         found.add(tiles[x][y])
         for (i in y-1 downTo  0){
-            if (board[x][i] == selectedTile)
+            if (tiles[x][i].tileState == selectedTileState)
                 found.add(tiles[x][i])
             else
                 break
         }
 
         for (i in y+1 until size) {
-            if (board[x][i] == selectedTile)
+            if (tiles[x][i].tileState == selectedTileState)
                 found.add(tiles[x][i])
             else
                 break
@@ -161,7 +154,7 @@ class GameActivity : AppCompatActivity() {
         while (i > 0 && j > 0) {
             i--
             j--
-            if (board[i][j] == selectedTile)
+            if (tiles[i][j].tileState == selectedTileState)
                 found.add(tiles[i][j])
             else
                 break
@@ -172,7 +165,7 @@ class GameActivity : AppCompatActivity() {
         while (i < size -1 && j < size -1) {
             i++
             j++
-            if (board[i][j] == selectedTile)
+            if (tiles[i][j].tileState == selectedTileState)
                 found.add(tiles[i][j])
             else
                 break
@@ -190,7 +183,7 @@ class GameActivity : AppCompatActivity() {
         while (i > 0 && j < size -1) {
             i--
             j++
-            if (board[i][j] == selectedTile)
+            if (tiles[i][j].tileState == selectedTileState)
                 found.add(tiles[i][j])
             else
                 break
@@ -201,7 +194,7 @@ class GameActivity : AppCompatActivity() {
         while (i < size -1 && j > 0) {
             i++
             j--
-            if (board[i][j] == selectedTile)
+            if (tiles[i][j].tileState == selectedTileState)
                 found.add(tiles[i][j])
             else
                 break
@@ -237,9 +230,13 @@ class GameActivity : AppCompatActivity() {
         EMPTY, CROSS, CIRCLE
     }
 
-    private fun colorTiles(tiles : ArrayList<ImageButton>){
+    private fun colorTiles(tiles : ArrayList<MyTile>){
         for (tile in tiles)
             tile.setBackgroundColor(Color.GREEN)
+    }
+
+    private class MyTile(context: Context) : androidx.appcompat.widget.AppCompatImageButton(context) {
+        var tileState = TileState.EMPTY
     }
 
 }
